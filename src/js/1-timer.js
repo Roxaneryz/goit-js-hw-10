@@ -4,6 +4,7 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 let userSelectedDate;
+let timerInterval ;
 
 function addLeadingZero(value) {
   return value < 10 ? `0${value}` : value;
@@ -38,18 +39,19 @@ function updateTimerDisplay(timeLeft) {
 function startTimer() {
   const difference = userSelectedDate - Date.now();
 
-
+if (difference < 0){
     clearInterval(timerInterval);
     updateTimerDisplay({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     iziToast.success({
       title: 'Countdown Finished',
       message: 'The countdown timer has reached the end date!',
-    });
+    }); 
     return;
   }
 
   const timeLeft = convertMs(difference);
   updateTimerDisplay(timeLeft);
+}
 
 flatpickr('#datetime-picker', {
   enableTime: true,
@@ -57,7 +59,7 @@ flatpickr('#datetime-picker', {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    
+    console.log(selectedDates);
     if (selectedDates[0] < new Date()) {
       
       iziToast.error({
@@ -72,7 +74,7 @@ flatpickr('#datetime-picker', {
       
       document.getElementById('startButton').disabled = false;
     }
-  },
+  }, 
 });
 
 
@@ -84,3 +86,4 @@ document.getElementById('startButton').addEventListener('click', () => {
   startTimer();
   timerInterval = setInterval(startTimer, 1000);
 });
+
